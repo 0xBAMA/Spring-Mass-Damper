@@ -5,6 +5,12 @@ SDL_Renderer* ren = NULL;
 
 bool quit = false;
 
+//going to handle positions etc as 3d, but just put them in a plane - less to change later
+glm::vec3 anchor1pos;
+glm::vec3 anchor2pos;
+
+
+
 void handle_events()
 {
     SDL_Event e;
