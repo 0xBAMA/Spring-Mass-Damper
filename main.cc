@@ -1,10 +1,4 @@
-#include <SDL2/SDL.h> //we're just using the base SDL2 libraries - not going to get into the extensions right now
-#include <cstdlib>
-#include <iostream>
-#include <random>
-using std::cerr;
-using std::cout;
-using std::endl;
+#include "includes.h"
 
 SDL_Window*   win = NULL;
 SDL_Renderer* ren = NULL;
@@ -94,8 +88,12 @@ int main()
         SDL_SetRenderDrawColor(ren, 0x16, 0x16, 0x16, 0x16);
         SDL_RenderClear(ren);
 
+        //first do the things that should be behind the filled in stuff
         //draw the links
         //draw the mouse thing
+        
+        //then do the filled in stuff
+        //draw the anchors
         //draw the nodes
         
         SDL_SetRenderDrawColor(ren, 0x61, 0x16, 0x16, 0x16);
