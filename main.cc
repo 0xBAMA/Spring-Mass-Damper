@@ -30,7 +30,7 @@ void handle_events()
             {
                 case SDLK_ESCAPE:
                     cout << " exiting (quitting via escape)";   // this is called when the escape button is hit
-                    quit = true;  //this will be seen in main
+                    quit = true;  //this controls the main loop
                     break;
 
                 //default:
