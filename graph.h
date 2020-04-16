@@ -19,15 +19,23 @@
 
 class edge
 {
-    //spring constant
-    //damping rate
-    //base distance 
+    public:
+        float k;                //spring constant
+        float damping_rate;     //damping rate
+        float base_length;      //base distance 
+
+        int node1;              //first node involved
+        int node2;              //second node involved
 };
 
 class node
 {
-    //mass
-    //position
+    public:
+        float mass;             //value of the mass
+        glm::vec3 position;     //location of the node
+        glm::vec3 velocity;     //velocity of the node
+
+        vector<edge> edges;     //the edges that will impart forces on this node
 };
 
 class graph
