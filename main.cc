@@ -71,6 +71,9 @@ int main()
     SDL_CreateWindowAndRenderer(640, 480, 0, &win, &ren);
     SDL_SetWindowTitle(win, "Spring Mass Damper");
 
+    
+    
+    
     //construct the graph
     graph g;
 
@@ -81,6 +84,13 @@ int main()
 
     g.add_edge(3, 4, 0, 2);                        //edge between 0 and 2
     g.add_edge(1, 2, 1, 2);                        //edge between 1 and 2
+
+
+    //add more nodes
+    //add more edges
+
+
+
 
 
     while(!quit)  //main loop
