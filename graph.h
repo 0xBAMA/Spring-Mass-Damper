@@ -17,8 +17,10 @@
 
 #include "includes.h"
 
-#define TIMESTEP 0.01f
-#define GRAVITY  10.0f
+#define TIMESTEP            0.25f
+#define GRAVITY             10.0f
+#define MOUSE_SPRING_COEF   4.0f
+#define MOUSE_DAMP_COEF     5.0f
 
 struct edge
 {
@@ -118,7 +120,6 @@ void graph::draw_links(SDL_Renderer* r)
 void graph::draw_nodes(SDL_Renderer* r)
 {
     glm::vec3 point;
-    SDL_SetRenderDrawColor(r, 0x0,0xf0,0xf0,0xff);
     SDL_Rect rect;
 
     for(uint i = 0; i < nodes.size(); i++)
@@ -130,7 +131,12 @@ void graph::draw_nodes(SDL_Renderer* r)
         rect.w = 10;
         rect.h = 10; // the rectangle
         
-       SDL_RenderFillRect(r, &rect);
+        if(nodes[i].anchor)
+            SDL_SetRenderDrawColor(r, 0x0, 0x0,0xe0,0xff);
+        else
+            SDL_SetRenderDrawColor(r, 0x0,0xf0,0xf0,0xff);
+        
+        SDL_RenderFillRect(r, &rect);
     }
 }
 
@@ -150,13 +156,17 @@ void graph::draw_mouse_link(SDL_Renderer* r, int mousex, int mousey, bool mousec
         }
     }
 
-    //we've got the closest point
-    if(mouseclicked)
-        SDL_SetRenderDrawColor(r, 0xff, 0x89, 0x23, 0xff);
-    else
-        SDL_SetRenderDrawColor(r, 0xd3, 0xd9, 0x23, 0xff);
+    if(closest_point_dist < 300)
+    {
+        //we've got the closest point
+        if(mouseclicked)
+            SDL_SetRenderDrawColor(r, 0xff, 0x89, 0x23, 0xff);
+        else
+            SDL_SetRenderDrawColor(r, 0xd3, 0xd9, 0x23, 0xff);
+    
+        SDL_RenderDrawLine(r, closest_point.x, closest_point.y, mousex, mousey);
 
-    SDL_RenderDrawLine(r, closest_point.x, closest_point.y, mousex, mousey);
+    }
 }
 
 void graph::update(int mousex, int mousey, bool clicked)
@@ -167,6 +177,25 @@ void graph::update(int mousex, int mousey, bool clicked)
         nodes[i].old_position = nodes[i].position;
         nodes[i].old_velocity = nodes[i].velocity;
     }
+    
+    
+    
+    int closest_point_index;
+    if(clicked)
+    {   //determine the index of the closest point to the mouse
+        float closest_point_dist = 1000;
+        for(uint k = 0; k < nodes.size(); k++)
+        {
+            float dist = glm::distance(nodes[k].old_position, glm::vec3(mousex,mousey,0)); 
+            if(dist < closest_point_dist)
+            {
+                closest_point_dist = dist;
+                closest_point_index = k;
+            }
+        }
+    }
+
+
 
     for(uint i = 0; i < nodes.size(); i++)
     {
@@ -179,8 +208,6 @@ void graph::update(int mousex, int mousey, bool clicked)
                 float k = nodes[i].edges[j].k;
                 float d = nodes[i].edges[j].damping_rate;
 
-                float my_mass = nodes[i].mass;
-
                 glm::vec3 my_position = nodes[i].old_position;
                 glm::vec3 ur_position = nodes[nodes[i].edges[j].node2].old_position;
 
@@ -188,9 +215,22 @@ void graph::update(int mousex, int mousey, bool clicked)
 
                 glm::vec3 springforce = -k * (my_position - ur_position);
                 glm::vec3 dampforce = d * my_velocity;
-                glm::vec3 gravforce = my_mass * glm::vec3(0,GRAVITY,0);
 
-                force += (springforce + gravforce - dampforce);
+                force += (springforce - dampforce);
+            }
+
+            force += nodes[i].mass * glm::vec3(0,GRAVITY,0);
+            
+            if(clicked)
+            {
+                if(i == closest_point_index)
+                {
+                    //apply the force, with some damping
+                    glm::vec3 springforce = -MOUSE_SPRING_COEF * (nodes[i].old_position - glm::vec3(mousex, mousey, 0));
+                    glm::vec3 dampforce = MOUSE_DAMP_COEF * nodes[i].old_velocity;
+
+                    force += (springforce - dampforce);
+                }
             }
 
             //compute acceleration that will come from this force, f=ma

@@ -80,17 +80,33 @@ int main()
     g.add_node(0, glm::vec3(100,100,0), true);      //node 0 is anchored
     g.add_node(0, glm::vec3(540,100,0), true);      //node 1 is anchored
 
-    g.add_node(20, glm::vec3(300,25,0), false);    //node 2 is not anchored
+    g.add_node(8, glm::vec3(300,25,0), false);     //node 2 is not anchored
 
-    g.add_edge(3, 4, 0, 2);                        //edge between 0 and 2
-    g.add_edge(1, 2, 1, 2);                        //edge between 1 and 2
-
-
-    //add more nodes
-    //add more edges
+    g.add_edge(2, 4, 0, 2);                         //edge between 0 and 2
+    g.add_edge(4, 2, 1, 2);                         //edge between 1 and 2
 
 
+    g.add_node(18, glm::vec3(165,75,0), false);     //node 3 is not anchored
+    
+    g.add_edge(2, 3, 0, 3);                         //edge between 0 and 3
+    g.add_edge(3, 4, 2, 3);                         //edge between 2 and 3
 
+
+    g.add_node(14, glm::vec3(420,85,0), false);     //node 4 is not anchored
+
+    g.add_edge(3, 5, 1, 4);                         //edge between 1 and 4
+    g.add_edge(2, 4, 2, 4);                         //edge between 2 and 4
+
+
+    g.add_node(15, glm::vec3(265,200,0), false);    //node 5 is not anchored
+
+    g.add_edge(4, 4, 3, 5);                         //edge between 3 and 5
+    g.add_edge(2, 5, 4, 5);                         //edge between 4 and 5
+
+
+    g.add_node(18, glm::vec3(300,250,0), false);    //node 6 is not anchored
+
+    g.add_edge(5, 1, 5, 6);                         //edge between 5 and 6
 
 
     while(!quit)  //main loop
@@ -118,6 +134,8 @@ int main()
         //SDL_RenderDrawPoint(ren, 100, 100);
 
         SDL_RenderPresent(ren);
+
+        SDL_Delay(5);
     }
 
     SDL_DestroyRenderer(ren);
