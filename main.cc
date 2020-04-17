@@ -82,14 +82,14 @@ int main()
 
     g.add_node(8, glm::vec3(300,25,0), false);     //node 2 is not anchored
 
-    g.add_edge(2, 4, 0, 2);                         //edge between 0 and 2
-    g.add_edge(4, 2, 1, 2);                         //edge between 1 and 2
+    g.add_edge(5, 1.5, 0, 2);                         //edge between 0 and 2
+    g.add_edge(4, 1.2, 1, 2);                         //edge between 1 and 2
 
 
     g.add_node(18, glm::vec3(165,75,0), false);     //node 3 is not anchored
     
-    g.add_edge(2, 3, 0, 3);                         //edge between 0 and 3
-    g.add_edge(3, 4, 2, 3);                         //edge between 2 and 3
+    g.add_edge(5, 2, 0, 3);                         //edge between 0 and 3
+    g.add_edge(3, 2, 2, 3);                         //edge between 2 and 3
 
 
     g.add_node(14, glm::vec3(420,85,0), false);     //node 4 is not anchored
