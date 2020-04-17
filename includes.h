@@ -18,6 +18,7 @@
 #include <SDL2/SDL.h> //we're just using the base SDL2 libraries - not going to get into the extensions right now
 #include <cstdlib>
 #include <random>
+#include <vector>
 #include <iostream>
 using std::cerr;
 using std::cout;
@@ -33,5 +34,7 @@ using std::endl;
 #include "glm/gtc/matrix_transform.hpp" // for glm::ortho
 #include "glm/gtc/type_ptr.hpp" //to send matricies gpu-side
 #include "glm/gtx/transform.hpp"  //rotations, scaling, etc
+
+#include "graph.h"
 
 #endif
