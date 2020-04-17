@@ -10,12 +10,11 @@ all: msg main
 msg:
 	@echo 'Compiling'
 
+#main: main.cc
+#	${CXX} ${CXXFLAGS} -O3 -lSDL2  -o $@ $< ${SDL2FLAGS}
 
-# -lSDL2_image -lSDL2_ttf
-
-main: main.cc
-	${CXX} ${CXXFLAGS} -O3 -lSDL2  -o $@ $< ${SDL2FLAGS}
-
+main: main.cc graph.h includes.h
+	${CXX} ${CXXFLAGS} -O3 -lSDL2 -o main main.cc ${SDL2FLAGS}
 
 run: msg main
 	time ./main

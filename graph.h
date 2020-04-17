@@ -17,15 +17,14 @@
 
 #include "includes.h"
 
-#define TIMESTEP 0.01
-#define GRAVITY  10.0
+#define TIMESTEP 0.01f
+#define GRAVITY  10.0f
 
-//maybe make these structs?
 struct edge
 {
     float k;                    //spring constant
     float damping_rate;         //damping rate
-    float base_length;          //base distance 
+    //float base_length;          //base distance - may want to implement this compressible springs 
 
     int node1;                  //first node involved
     int node2;                  //second node involved
@@ -51,11 +50,11 @@ class graph
         void add_node(float mass, glm::vec3 position, bool anchor);    //add a node to the list
         void add_edge(float k, float damping, int node1, int node2);   //add an edge between two nodes
         
-        void update();              //updates all the position/velocity values
+        void update(int mousex, int mousey, bool clicked);             //updates all the position/velocity values
         
         void draw_links(SDL_Renderer* r);
         void draw_nodes(SDL_Renderer* r);
-
+        void draw_mouse_link(SDL_Renderer* r, int mousex, int mousey, bool mouseclicked);
 
     private:
     //has a list of nodes - list of edges is held by each node, and redundantly here, for drawing purposes
@@ -92,7 +91,7 @@ void graph::add_edge(float k, float damping, int node1, int node2)
     temp2.node2 = node1;
 
     //base lengths are the same, just the distance between the 
-    temp1.base_length = temp2.base_length = glm::distance(nodes[node1].position, nodes[node2].position); 
+    //temp1.base_length = temp2.base_length = glm::distance(nodes[node1].position, nodes[node2].position); 
 
     //put the edge in the graph's list of edges
     edges.push_back(temp1);
@@ -107,7 +106,7 @@ void graph::draw_links(SDL_Renderer* r)
 {
     glm::vec3 point1, point2;
     SDL_SetRenderDrawColor(r, 0xff, 0, 0, 0xff);   
-    for(int i = 0; i < edges.size(); i++)
+    for(uint i = 0; i < edges.size(); i++)
     {
         point1 = nodes[edges[i].node1].position;
         point2 = nodes[edges[i].node2].position;
@@ -122,7 +121,7 @@ void graph::draw_nodes(SDL_Renderer* r)
     SDL_SetRenderDrawColor(r, 0x0,0xf0,0xf0,0xff);
     SDL_Rect rect;
 
-    for(int i = 0; i < nodes.size(); i++)
+    for(uint i = 0; i < nodes.size(); i++)
     {
         point = nodes[i].position;
         
@@ -134,4 +133,74 @@ void graph::draw_nodes(SDL_Renderer* r)
        SDL_RenderFillRect(r, &rect);
     }
 }
+
+void graph::draw_mouse_link(SDL_Renderer* r, int mousex, int mousey, bool mouseclicked)
+{
+    glm::vec3 closest_point;
+    float closest_point_dist = 1000;
+
+    for(uint i = 0; i < nodes.size(); i++)
+    {
+        float dist = glm::distance(nodes[i].position, glm::vec3(mousex,mousey,0));
+
+        if(!nodes[i].anchor && dist < closest_point_dist)
+        {
+            closest_point_dist = dist;
+            closest_point = nodes[i].position;
+        }
+    }
+
+    //we've got the closest point
+    if(mouseclicked)
+        SDL_SetRenderDrawColor(r, 0xff, 0x89, 0x23, 0xff);
+    else
+        SDL_SetRenderDrawColor(r, 0xd3, 0xd9, 0x23, 0xff);
+
+    SDL_RenderDrawLine(r, closest_point.x, closest_point.y, mousex, mousey);
+}
+
+void graph::update(int mousex, int mousey, bool clicked)
+{
+    //back up previous values of position and velocity
+    for(uint i = 0; i < nodes.size(); i++)
+    {
+        nodes[i].old_position = nodes[i].position;
+        nodes[i].old_velocity = nodes[i].velocity;
+    }
+
+    for(uint i = 0; i < nodes.size(); i++)
+    {
+        if(!nodes[i].anchor)
+        {
+
+            glm::vec3 force; //holds total force that will accelerate the current node
+            for(uint j = 0; j < nodes[i].edges.size(); j++) //loop through connections
+            {
+                float k = nodes[i].edges[j].k;
+                float d = nodes[i].edges[j].damping_rate;
+
+                float my_mass = nodes[i].mass;
+
+                glm::vec3 my_position = nodes[i].old_position;
+                glm::vec3 ur_position = nodes[nodes[i].edges[j].node2].old_position;
+
+                glm::vec3 my_velocity = nodes[i].old_velocity; 
+
+                glm::vec3 springforce = -k * (my_position - ur_position);
+                glm::vec3 dampforce = d * my_velocity;
+                glm::vec3 gravforce = my_mass * glm::vec3(0,GRAVITY,0);
+
+                force += (springforce + gravforce - dampforce);
+            }
+
+            //compute acceleration that will come from this force, f=ma
+            glm::vec3 acceleration = force / nodes[i].mass;
+            //update velocity based on this computed acceleration
+            nodes[i].velocity = nodes[i].old_velocity + acceleration * TIMESTEP;
+            //update position based on this new value of velocity
+            nodes[i].position = nodes[i].old_position + nodes[i].velocity * TIMESTEP;
+        }
+    }
+}
+
 #endif
