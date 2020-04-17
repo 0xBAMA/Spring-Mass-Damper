@@ -1,17 +1,12 @@
 #include "includes.h"
 
-SDL_Window*   win = NULL;
-SDL_Renderer* ren = NULL;
-
 bool quit = false;
 
-//going to handle positions etc as 3d, but just put them in a plane - less to change later
-glm::vec3 anchor1pos;
-glm::vec3 anchor2pos;
+int mousex = 0;
+int mousey = 0;
 
 
-
-void handle_events()
+void handle_events(SDL_Window* win)
 {
     SDL_Event e;
 
@@ -29,7 +24,7 @@ void handle_events()
             switch( e.key.keysym.sym )
             {
                 case SDLK_ESCAPE:
-                    cout << " exiting (quitting via escape)";   // this is called when the escape button is hit
+                    cout << " exiting (quitting via escape)" << endl;   // this is called when the escape button is hit
                     quit = true;  //this controls the main loop
                     break;
 
@@ -68,7 +63,13 @@ void handle_events()
                     break;
             }
         }
-        cout << " at time " << e.key.timestamp << endl << endl;
+        else if (e.type == SDL_MOUSEMOTION)
+        {
+            mousex = e.motion.x;
+            mousey = e.motion.y;
+            //cout << "mouse moved to x:" << mousex << " y:" << mousey << " ";
+        }
+        //cout << " at time " << e.key.timestamp << endl << endl;
     }
 }
 
@@ -79,31 +80,53 @@ int main()
     // std::mt19937 mt(rd());
     // std::uniform_int_distribution<int> dist(0,619);
 
+
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
         cerr << "SDL_Init Error: " << SDL_GetError() << endl;
         return EXIT_FAILURE;
     }
 
+
+    SDL_Window* win;
+    SDL_Renderer* ren;
+
     SDL_CreateWindowAndRenderer(640, 480, 0, &win, &ren);
     SDL_SetWindowTitle(win, "Spring Mass Damper");
 
+    //construct the graph
+    graph g;
+
+    g.add_node(0, glm::vec3(100,100,0), true);      //node 0 is anchored
+    g.add_node(0, glm::vec3(540,100,0), true);      //node 1 is anchored
+
+    g.add_node(20, glm::vec3(300,150,0), false);    //node 2 is not anchored
+
+    g.add_edge(3, 10, 0, 2);                        //edge between 0 and 2
+    g.add_edge(3, 10, 1, 2);                        //edge between 1 and 2
+
+
     while(!quit)  //main loop
     {
-        handle_events();
+        handle_events(win);
+        
         SDL_SetRenderDrawColor(ren, 0x16, 0x16, 0x16, 0x16);
         SDL_RenderClear(ren);
 
         //first do the things that should be behind the filled in stuff
         //draw the links
+        g.draw_links(ren);
+
         //draw the mouse thing
         
+
         //then do the filled in stuff
-        //draw the anchors
         //draw the nodes
-        
+        g.draw_nodes(ren);
+
+
         SDL_SetRenderDrawColor(ren, 0x61, 0x16, 0x16, 0x16);
-        SDL_RenderDrawPoint(ren, 100, 100);
+        //SDL_RenderDrawPoint(ren, 100, 100);
 
         SDL_RenderPresent(ren);
     }
