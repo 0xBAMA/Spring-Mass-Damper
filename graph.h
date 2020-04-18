@@ -187,7 +187,7 @@ void graph::update(int mousex, int mousey, bool clicked)
         for(uint k = 0; k < nodes.size(); k++)
         {
             float dist = glm::distance(nodes[k].old_position, glm::vec3(mousex,mousey,0)); 
-            if(dist < closest_point_dist)
+            if(dist < closest_point_dist && !nodes[k].anchor)
             {
                 closest_point_dist = dist;
                 closest_point_index = k;

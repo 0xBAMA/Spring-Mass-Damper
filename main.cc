@@ -77,13 +77,13 @@ int main()
     //construct the graph
     graph g;
 
-    g.add_node(0, glm::vec3(100,100,0), true);      //node 0 is anchored
-    g.add_node(0, glm::vec3(540,100,0), true);      //node 1 is anchored
+    g.add_node(0, glm::vec3(100,50,0), true);      //node 0 is anchored
+    g.add_node(0, glm::vec3(540,50,0), true);      //node 1 is anchored
 
-    g.add_node(8, glm::vec3(300,25,0), false);     //node 2 is not anchored
+    g.add_node(8, glm::vec3(300,25,0), false);      //node 2 is not anchored
 
-    g.add_edge(5, 1.5, 0, 2);                         //edge between 0 and 2
-    g.add_edge(4, 1.2, 1, 2);                         //edge between 1 and 2
+    g.add_edge(5, 1.5, 0, 2);                       //edge between 0 and 2
+    g.add_edge(4, 1.2, 1, 2);                       //edge between 1 and 2
 
 
     g.add_node(18, glm::vec3(165,75,0), false);     //node 3 is not anchored
@@ -106,7 +106,8 @@ int main()
 
     g.add_node(18, glm::vec3(300,250,0), false);    //node 6 is not anchored
 
-    g.add_edge(5, 1, 5, 6);                         //edge between 5 and 6
+    g.add_edge(5, 2.3, 5, 6);                         //edge between 5 and 6
+
 
 
     while(!quit)  //main loop
