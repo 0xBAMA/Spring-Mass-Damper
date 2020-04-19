@@ -199,10 +199,13 @@ void graph::update(int mousex, int mousey, bool clicked)
 
     for(uint i = 0; i < nodes.size(); i++)
     {
+        //cout << endl << "Starting on node " << i << ": " << endl;
+        //cout << "initial position: " << glm::to_string(nodes[i].old_position) << endl;
+                
+        
         if(!nodes[i].anchor)
         {
-
-            glm::vec3 force; //holds total force that will accelerate the current node
+            glm::vec3 force = glm::vec3(0,0,0); //holds total force that will accelerate the current node
             for(uint j = 0; j < nodes[i].edges.size(); j++) //loop through connections
             {
                 float k = nodes[i].edges[j].k;
@@ -217,10 +220,14 @@ void graph::update(int mousex, int mousey, bool clicked)
                 glm::vec3 dampforce = d * my_velocity;
 
                 force += (springforce - dampforce);
+
+                //cout << "adding force " << glm::to_string(springforce - dampforce) << endl;
             }
 
             force += nodes[i].mass * glm::vec3(0,GRAVITY,0);
             
+            //cout << "total force on node " << i << " is " << glm::to_string(force) << endl;
+    
             if(clicked)
             {
                 if(i == closest_point_index)
@@ -244,9 +251,13 @@ void graph::update(int mousex, int mousey, bool clicked)
         else
         {
             //cout << nodes[i].position.y << endl << std::flush;
-            nodes[i].position.y = 100 + 40 * sin(0.001*SDL_GetTicks());    
+            if(i == 0 || i == 1)
+                nodes[i].position.y = 100 + 40 * sin(0.01*SDL_GetTicks());    
+            if(i == 2 || i == 3)
+                nodes[i].position.y = 380 + 40 * sin(0.0125*SDL_GetTicks()); 
         }
     }
+    //cout << endl << endl;
 }
 
 #endif

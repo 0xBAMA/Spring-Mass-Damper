@@ -82,36 +82,72 @@ int main()
     //construct the graph
     graph g;
 
-    g.add_node(0, glm::vec3(100,100,0), true);      //node 0 is anchored
-    g.add_node(0, glm::vec3(540,100,0), true);      //node 1 is anchored
 
-    g.add_node(8, glm::vec3(300,25,0), false);      //node 2 is not anchored
-
-    g.add_edge(5, 1.5, 0, 2);                       //edge between 0 and 2
-    g.add_edge(4, 1.2, 1, 2);                       //edge between 1 and 2
+    g.add_node(0, glm::vec3(100,100,0), true);
+    g.add_node(0, glm::vec3(540,100,0), true);
+    g.add_node(0, glm::vec3(100,380,0), true);
+    g.add_node(0, glm::vec3(540,380,0), true);
 
 
-    g.add_node(18, glm::vec3(165,75,0), false);     //node 3 is not anchored
+
+    //add all the nodes
+    glm::vec3 point(140,140,0);
+    for(int y = 0; y <= 200; y+=50)
+    {
+        for(int x = 0; x <= 360; x+=60)
+        {
+            g.add_node(10, point+glm::vec3(x,y,0), false);
+        }
+    }
+
+    #define SPRING  5.25f
+    #define DAMP    2.75f
     
-    g.add_edge(5, 2, 0, 3);                         //edge between 0 and 3
-    g.add_edge(3, 2, 2, 3);                         //edge between 2 and 3
+    #define CSPRING 6.0f
+    #define CDAMP   12.0f
 
 
-    g.add_node(14, glm::vec3(420,85,0), false);     //node 4 is not anchored
 
-    g.add_edge(3, 5, 1, 4);                         //edge between 1 and 4
-    g.add_edge(2, 4, 2, 4);                         //edge between 2 and 4
+    //corner links
+    g.add_edge(CSPRING, CDAMP, 0, 4);
+    g.add_edge(CSPRING, CDAMP, 1, 10);
+    g.add_edge(CSPRING, CDAMP, 2, 32);
+    g.add_edge(CSPRING, CDAMP, 3, 38);
+   
+
+    //top middle link
+    g.add_node(0, glm::vec3(320, 100, 0), true);
+    g.add_edge(CSPRING, CDAMP, 39, 7);
+    
+    for(int i = 0; i < 6; i++)
+    {
+        g.add_edge(SPRING, DAMP, 4+i, 5+i);         //top edge links
+        g.add_edge(SPRING, DAMP, 32+i, 33+i);       //bottom edge links
+    }
+    
+    for(int i = 0; i < 4; i++)
+    {
+        g.add_edge(SPRING, DAMP, 4+7*i, 11+7*i);    //left side links
+        g.add_edge(SPRING, DAMP, 10+7*i, 17+7*i);   //right side links
+    }
+    
+    
+    //internal links
+    for(int y = 0; y < 3; y++)
+        for(int x = 0; x < 5; x++)
+        {
+            g.add_edge(SPRING, DAMP, 12+x+7*y, 12+x+7*(y-1));   //up
+            g.add_edge(SPRING, DAMP, 12+x+7*y, 12+x+7*(y+1));   //down
+            g.add_edge(SPRING, DAMP, 12+x+7*y, 12+(x-1)+7*y);   //left
+            g.add_edge(SPRING, DAMP, 12+x+7*y, 12+(x+1)+7*y);   //right
+        }
+    
+    
 
 
-    g.add_node(15, glm::vec3(265,200,0), false);    //node 5 is not anchored
-
-    g.add_edge(4, 4, 3, 5);                         //edge between 3 and 5
-    g.add_edge(2, 5, 4, 5);                         //edge between 4 and 5
 
 
-    g.add_node(18, glm::vec3(300,250,0), false);    //node 6 is not anchored
 
-    g.add_edge(5, 0.3, 5, 6);                         //edge between 5 and 6
 
 
     while(!quit)  //main loop
@@ -133,13 +169,9 @@ int main()
         //draw the nodes
         g.draw_nodes(ren);
 
-
-        SDL_SetRenderDrawColor(ren, 0x61, 0x16, 0x16, 0x16);
-        //SDL_RenderDrawPoint(ren, 100, 100);
-
         SDL_RenderPresent(ren);
 
-        SDL_Delay(5);
+        SDL_Delay(15);
         
         handle_events(win);
     }
