@@ -18,8 +18,8 @@
 #include "includes.h"
 
 #define TIMESTEP            0.25f
-#define GRAVITY             10.0f
-#define MOUSE_SPRING_COEF   4.0f
+#define GRAVITY             0.0f
+#define MOUSE_SPRING_COEF   14.0f
 #define MOUSE_DAMP_COEF     5.0f
 
 struct edge

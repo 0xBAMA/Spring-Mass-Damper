@@ -103,7 +103,7 @@ int main()
     #define SPRING  5.25f
     #define DAMP    2.75f
     
-    #define CSPRING 6.0f
+    #define CSPRING 14.0f
     #define CDAMP   12.0f
 
 
@@ -115,9 +115,6 @@ int main()
     g.add_edge(CSPRING, CDAMP, 3, 38);
    
 
-    //top middle link
-    g.add_node(0, glm::vec3(320, 100, 0), true);
-    g.add_edge(CSPRING, CDAMP, 39, 7);
     
     for(int i = 0; i < 6; i++)
     {
