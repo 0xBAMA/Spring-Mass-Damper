@@ -202,7 +202,7 @@ void graph::update(int mousex, int mousey, bool clicked)
         if(!nodes[i].anchor)
         {
 
-            glm::vec3 force; //holds total force that will accelerate the current node
+            glm::vec3 force = glm::vec3(0,0,0); //holds total force that will accelerate the current node
             for(uint j = 0; j < nodes[i].edges.size(); j++) //loop through connections
             {
                 float k = nodes[i].edges[j].k;
