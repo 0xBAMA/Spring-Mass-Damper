@@ -244,14 +244,7 @@ void graph::update(int mousex, int mousey, bool clicked)
         else
         {
             //cout << nodes[i].position.y << endl << std::flush;
-            if(nodes[i].position.y < 300 && nodes[i].position.y > 45)
-            {
-                nodes[i].position.y += 1;
-            }
-            else
-            {
-                nodes[i].position.y += -1;    
-            }
+            nodes[i].position.y = 100 + 40 * sin(0.001*SDL_GetTicks());    
         }
     }
 }

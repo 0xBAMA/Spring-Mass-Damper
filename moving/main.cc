@@ -82,8 +82,8 @@ int main()
     //construct the graph
     graph g;
 
-    g.add_node(0, glm::vec3(100,50,0), true);      //node 0 is anchored
-    g.add_node(0, glm::vec3(540,50,0), true);      //node 1 is anchored
+    g.add_node(0, glm::vec3(100,100,0), true);      //node 0 is anchored
+    g.add_node(0, glm::vec3(540,100,0), true);      //node 1 is anchored
 
     g.add_node(8, glm::vec3(300,25,0), false);      //node 2 is not anchored
 
