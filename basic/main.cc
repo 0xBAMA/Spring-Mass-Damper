@@ -106,7 +106,7 @@ int main()
 
     g.add_node(18, glm::vec3(300,250,0), false);    //node 6 is not anchored
 
-    g.add_edge(5, 2.3, 5, 6);                         //edge between 5 and 6
+    g.add_edge(5, 0.3, 5, 6);                         //edge between 5 and 6
 
 
 
