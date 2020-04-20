@@ -82,46 +82,62 @@ int main()
     //construct the graph
     graph g;
     
-    //bridge truss
-    
-    #define NODE_MASS 3
-    std::vector<int> x_vals = {160,240,320,400,480};
-    
-    g.add_node(NODE_MASS, glm::vec3(100, 300, 0), true);    //node 0
+    //cloth
+    g.add_node(0, glm::vec3(100,100,0), true);
+    g.add_node(0, glm::vec3(540,100,0), true);
+    g.add_node(0, glm::vec3(100,380,0), true);
+    g.add_node(0, glm::vec3(540,380,0), true);
 
-    for(auto x : x_vals)
-        g.add_node(NODE_MASS, glm::vec3(x, 300, 0), false); //nodes 1,2,3,4,5
-    
-    g.add_node(NODE_MASS, glm::vec3(540, 300, 0), true);    //node 6
 
-    for(auto x : x_vals)
-        g.add_node(NODE_MASS, glm::vec3(x, 225, 0), false); //7,8,9,10,11
 
-    //add links
-    #define SPRING  100.0f
-    #define DAMP    4.0f
+    //add all the nodes
+    glm::vec3 point(140,140,0);
+    for(int y = 0; y <= 200; y+=50)
+    {
+        for(int x = 0; x <= 360; x+=60)
+        {
+            g.add_node(10, point+glm::vec3(x,y,0), false);
+        }
+    }
+
+    #define SPRING  200.0f
+    #define DAMP    3.0f
     
-    g.add_edge(SPRING, DAMP, 0,1);  //0,1
-    g.add_edge(SPRING, DAMP, 0,7);  //0,7
-    g.add_edge(SPRING, DAMP, 1,7);  //7,1
-    g.add_edge(SPRING, DAMP, 1,2);  //1,2
-    g.add_edge(SPRING, DAMP, 2,7);  //7,2
-    g.add_edge(SPRING, DAMP, 8,7);  //7,8
-    g.add_edge(SPRING, DAMP, 8,2);  //8,2
-    g.add_edge(SPRING, DAMP, 8,9);  //8,9
-    g.add_edge(SPRING, DAMP, 8,3);  //8,3
-    g.add_edge(SPRING, DAMP, 2,3);  //2,3
-    g.add_edge(SPRING, DAMP, 9,3);  //9,3
-    g.add_edge(SPRING, DAMP, 9,10); //9,10
-    g.add_edge(SPRING, DAMP, 3,10); //3,10
-    g.add_edge(SPRING, DAMP, 3,4);  //3,4
-    g.add_edge(SPRING, DAMP, 4,10); //4,10
-    g.add_edge(SPRING, DAMP, 4,5);  //4,5
-    g.add_edge(SPRING, DAMP, 4,11); //4,11
-    g.add_edge(SPRING, DAMP, 10,11);//10,11
-    g.add_edge(SPRING, DAMP, 5,11); //5,11
-    g.add_edge(SPRING, DAMP, 6,11); //6,11
-    g.add_edge(SPRING, DAMP, 5,6);  //5,6
+    #define CSPRING 45.0f
+    #define CDAMP   12.0f
+
+
+    //corner links
+    g.add_edge(CSPRING, CDAMP, 0, 4);
+    g.add_edge(CSPRING, CDAMP, 1, 10);
+    g.add_edge(CSPRING, CDAMP, 2, 32);
+    g.add_edge(CSPRING, CDAMP, 3, 38);
+    
+    
+    for(int i = 0; i < 6; i++)
+    {
+        g.add_edge(SPRING, DAMP, 4+i, 5+i);         //top edge links
+        g.add_edge(SPRING, DAMP, 32+i, 33+i);       //bottom edge links
+    }
+    
+    for(int i = 0; i < 4; i++)
+    {
+        g.add_edge(SPRING, DAMP, 4+7*i, 11+7*i);    //left side links
+        g.add_edge(SPRING, DAMP, 10+7*i, 17+7*i);   //right side links
+    }
+    
+    
+    //internal links
+    for(int y = 0; y < 3; y++)
+        for(int x = 0; x < 5; x++)
+        {
+            g.add_edge(SPRING, DAMP, 12+x+7*y, 12+x+7*(y-1));   //up
+            g.add_edge(SPRING, DAMP, 12+x+7*y, 12+x+7*(y+1));   //down
+            g.add_edge(SPRING, DAMP, 12+x+7*y, 12+(x-1)+7*y);   //left
+            g.add_edge(SPRING, DAMP, 12+x+7*y, 12+(x+1)+7*y);   //right
+        }
+    
+ 
 
 
     while(!quit)  //main loop
