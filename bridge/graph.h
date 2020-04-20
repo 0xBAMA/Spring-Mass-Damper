@@ -115,9 +115,9 @@ void graph::draw_links(SDL_Renderer* r)
         float dist = glm::distance(point1,point2);
 
         if(dist > edges[i].base_length)
-            SDL_SetRenderDrawColor(r, 32, 0, std::min((int)(32+(200*(dist/edges[i].base_length))), 255), 0xff);    //edge is in tension, draw blue 
+            SDL_SetRenderDrawColor(r, 32, 0, 255, 0xff);    //edge is in tension, draw blue 
         else
-            SDL_SetRenderDrawColor(r, std::min((int)(32+(200*(edges[i].base_length/dist))), 255), 0, 32, 0xff);    //edge is in compression, draw red
+            SDL_SetRenderDrawColor(r, 255, 0, 32, 0xff);    //edge is in compression, draw red
         
         SDL_RenderDrawLine(r, point1.x, point1.y, point2.x, point2.y);
     }
@@ -184,8 +184,6 @@ void graph::update(int mousex, int mousey, bool clicked)
         nodes[i].old_velocity = nodes[i].velocity;
     }
     
-    
-    
     int closest_point_index;
     if(clicked)
     {   //determine the index of the closest point to the mouse
@@ -200,8 +198,6 @@ void graph::update(int mousex, int mousey, bool clicked)
             }
         }
     }
-
-
 
     for(uint i = 0; i < nodes.size(); i++)
     {
@@ -220,7 +216,7 @@ void graph::update(int mousex, int mousey, bool clicked)
 
                 float spring_ratio = glm::distance(my_position, ur_position)/nodes[i].edges[j].base_length;
                 //need to consider the base length here (how does this length compare to the base length?)
-                glm::vec3 springforce = -k * (my_position - ur_position);
+                glm::vec3 springforce = -k * (my_position - ur_position) * spring_ratio;
                 glm::vec3 dampforce = d * my_velocity;
 
                 force += (springforce - dampforce);
