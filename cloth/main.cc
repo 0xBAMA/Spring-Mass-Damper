@@ -138,7 +138,7 @@ int main()
         }
     
  
-
+    SDL_GL_SetSwapInterval(1);
 
     while(!quit)  //main loop
     {

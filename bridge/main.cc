@@ -99,7 +99,7 @@ int main()
 
     //add links
     #define SPRING  100.0f
-    #define DAMP    4.0f
+    #define DAMP    1.0f
     
     g.add_edge(SPRING, DAMP, 0,1);  //0,1
     g.add_edge(SPRING, DAMP, 0,7);  //0,7
@@ -122,6 +122,9 @@ int main()
     g.add_edge(SPRING, DAMP, 5,11); //5,11
     g.add_edge(SPRING, DAMP, 6,11); //6,11
     g.add_edge(SPRING, DAMP, 5,6);  //5,6
+
+
+    SDL_GL_SetSwapInterval(1);
 
 
     while(!quit)  //main loop

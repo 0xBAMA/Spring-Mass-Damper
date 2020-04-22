@@ -17,7 +17,7 @@
 
 #include "includes.h"
 
-#define TIMESTEP            0.025f
+#define TIMESTEP            0.1f
 #define GRAVITY             10.0f
 #define MOUSE_SPRING_COEF   14.0f
 #define MOUSE_DAMP_COEF     5.0f
